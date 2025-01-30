@@ -467,7 +467,6 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
                 min = 0
                 max = 1000
                 field.setDecimals(2)
-                field.setSingleStep(10)
             else:
                 field = QtWidgets.QDoubleSpinBox()
                 min, max = -1000, 1000
