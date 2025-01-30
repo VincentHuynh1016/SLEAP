@@ -224,6 +224,28 @@ class FormBuilderModalDialog(QtWidgets.QDialog):
         return self._results
 
 
+# We are writing this method to override the spinbox in add_item so the increment/decrement is x10/x0.1
+class ExponentialSpinBox(QtWidgets.QDoubleSpinBox):
+    def stepBy(self, steps: int):
+        currValue = self.value()
+
+        if steps == 0:
+            return
+        
+        if steps > 0:
+            newValue = currValue * 10
+            if currValue == 0:
+                newValue = 0.01
+
+        elif steps < 0:
+            newValue = currValue * ((10) ** -1)
+
+        # We need to keep it in the range (0 - 1000)
+        newValue = min(self.maximum(), newValue)  
+        newValue = max(self.minimum(), newValue)
+        self.setValue(newValue)
+
+
 class FormBuilderLayout(QtWidgets.QFormLayout):
     """
     Custom `QFormLayout` which populates itself from list of form fields.
@@ -424,6 +446,7 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
             return
         for item in items_to_create:
             self.add_item(item)
+       
 
     def add_item(self, item: Dict[Text, Any]):
         if item["type"] == "text":
@@ -437,24 +460,22 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
 
         # double: show spinbox (number w/ up/down controls)
         elif item["type"] == "double":
-            field = QtWidgets.QDoubleSpinBox()
-
+            
             #If the label of the item is Loss Weight then we will set the min and max to 0 and 1000
             if item["label"] == "Loss Weight":
+                field = ExponentialSpinBox()
                 min = 0
                 max = 1000
-                field.setDecimals(3)
+                field.setDecimals(2)
                 field.setSingleStep(10)
             else:
+                field = QtWidgets.QDoubleSpinBox()
                 min, max = -1000, 1000
                 field.setSingleStep(0.25)
 
             if "range" in item.keys():
                 min, max = list(map(float, item["range"].split(",")))
             field.setRange(min, max)
-
-            #NOW THIS IS THE NEXT STEP (THE STEP SIZE)
-            """CODE HERE"""
                 
 
             field.setValue(item["default"])
