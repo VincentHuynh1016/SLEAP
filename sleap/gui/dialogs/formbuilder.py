@@ -439,11 +439,23 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
         elif item["type"] == "double":
             field = QtWidgets.QDoubleSpinBox()
 
-            min, max = -1000, 1000
+            #If the label of the item is Loss Weight then we will set the min and max to 0 and 1000
+            if item["label"] == "Loss Weight":
+                min = 0
+                max = 1000
+                field.setDecimals(3)
+                field.setSingleStep(10)
+            else:
+                min, max = -1000, 1000
+                field.setSingleStep(0.25)
+
             if "range" in item.keys():
                 min, max = list(map(float, item["range"].split(",")))
             field.setRange(min, max)
-            field.setSingleStep(0.25)
+
+            #NOW THIS IS THE NEXT STEP (THE STEP SIZE)
+            """CODE HERE"""
+                
 
             field.setValue(item["default"])
 
