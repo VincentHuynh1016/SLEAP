@@ -231,7 +231,7 @@ class ExponentialSpinBox(QtWidgets.QDoubleSpinBox):
 
         if steps == 0:
             return
-        
+
         if steps > 0:
             newValue = currValue * 10
             if currValue == 0:
@@ -241,7 +241,7 @@ class ExponentialSpinBox(QtWidgets.QDoubleSpinBox):
             newValue = currValue * ((10) ** -1)
 
         # We need to keep it in the range (0 - 1000)
-        newValue = min(self.maximum(), newValue)  
+        newValue = min(self.maximum(), newValue)
         newValue = max(self.minimum(), newValue)
         self.setValue(newValue)
 
@@ -446,7 +446,6 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
             return
         for item in items_to_create:
             self.add_item(item)
-       
 
     def add_item(self, item: Dict[Text, Any]):
         if item["type"] == "text":
@@ -460,8 +459,8 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
 
         # double: show spinbox (number w/ up/down controls)
         elif item["type"] == "double":
-            
-            #If the label of the item is Loss Weight then we will set the min and max to 0 and 1000
+
+            # If the label of the item is Loss Weight then we will set the min and max to 0 and 1000
             if item["label"] == "Loss Weight":
                 field = ExponentialSpinBox()
                 min = 0
@@ -475,7 +474,6 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
             if "range" in item.keys():
                 min, max = list(map(float, item["range"].split(",")))
             field.setRange(min, max)
-                
 
             field.setValue(item["default"])
 
