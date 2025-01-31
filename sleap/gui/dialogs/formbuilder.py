@@ -224,9 +224,15 @@ class FormBuilderModalDialog(QtWidgets.QDialog):
         return self._results
 
 
-# We are writing this method to override the spinbox in add_item so the increment/decrement is x10/x0.1
 class ExponentialSpinBox(QtWidgets.QDoubleSpinBox):
+    """We are writing this method to override the spinbox in add_item so the increment/decrement is x10/x0.1"""
+
     def stepBy(self, steps: int):
+        """Overrides the default step behavior to increase or decrease by a factor of 10.
+
+        Args:
+            steps (int): The step count; positive values multiply by 10, negative values divide by 10.
+        """
         currValue = self.value()
 
         if steps == 0:
@@ -240,7 +246,7 @@ class ExponentialSpinBox(QtWidgets.QDoubleSpinBox):
         elif steps < 0:
             newValue = currValue * ((10) ** -1)
 
-        # We need to keep it in the range (0 - 1000)
+        """Ensures value is in the range (0 - 1000)"""
         newValue = min(self.maximum(), newValue)
         newValue = max(self.minimum(), newValue)
         self.setValue(newValue)
@@ -457,11 +463,13 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
             self.addRow(field)
             return
 
-        # double: show spinbox (number w/ up/down controls)
-        elif item["type"] == "double":
+        elif (
+            item["type"] == "double"
+        ):  # double: show spinbox (number w/ up/down controls)
 
-            # If the label of the item is Loss Weight then we will set the min and max to 0 and 1000
-            if item["label"] == "Loss Weight":
+            if (
+                item["label"] == "Loss Weight"
+            ):  # Set min/max to 0-1000 if label is "Loss Weight"
                 field = ExponentialSpinBox()
                 min = 0
                 max = 1000
@@ -479,8 +487,8 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
 
             field.valueChanged.connect(lambda: self.valueChanged.emit())
 
-        # int: show spinbox (number w/ up/down controls)
-        elif item["type"] == "int":
+        
+        elif item["type"] == "int": # int: show spinbox (number w/ up/down controls)
             field = QtWidgets.QSpinBox()
             if "range" in item.keys():
                 min, max = list(map(int, item["range"].split(",")))
