@@ -29,6 +29,7 @@ want to add a new type of supported form field.
 
 from typing import Any, Dict, List, Optional, Text
 
+
 import yaml
 from qtpy import QtCore, QtWidgets
 
@@ -235,20 +236,21 @@ class ExponentialSpinBox(QtWidgets.QDoubleSpinBox):
         """
         currValue = self.value()
 
-        if steps == 0:
-            return
-
         if steps > 0:
-            newValue = currValue * 10
+            newValue = currValue * 10.0
             if currValue == 0:
                 newValue = 0.01
 
         elif steps < 0:
-            newValue = currValue * ((10) ** -1)
+            newValue = currValue * 0.1
+
+        else:
+            return
 
         """Ensures value is in the range (0 - 1000)"""
         newValue = min(self.maximum(), newValue)
         newValue = max(self.minimum(), newValue)
+
         self.setValue(newValue)
 
 
@@ -471,8 +473,8 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
                 item["label"] == "Loss Weight"
             ):  # Set min/max to 0-1000 if label is "Loss Weight"
                 field = ExponentialSpinBox()
-                min = 0
-                max = 1000
+                min = 0.0
+                max = 1000.0
                 field.setDecimals(2)
             else:
                 field = QtWidgets.QDoubleSpinBox()
@@ -487,8 +489,7 @@ class FormBuilderLayout(QtWidgets.QFormLayout):
 
             field.valueChanged.connect(lambda: self.valueChanged.emit())
 
-        
-        elif item["type"] == "int": # int: show spinbox (number w/ up/down controls)
+        elif item["type"] == "int":  # int: show spinbox (number w/ up/down controls)
             field = QtWidgets.QSpinBox()
             if "range" in item.keys():
                 min, max = list(map(int, item["range"].split(",")))

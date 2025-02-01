@@ -1,6 +1,7 @@
 import yaml
 
 from sleap.gui.dialogs import formbuilder
+import math
 
 
 def test_formbuilder_dialog(qtbot):
@@ -19,7 +20,7 @@ def test_formbuilder(qtbot):
   label: Method
   type: stacked
   default: two
-  options: one,two,three
+  options: one,two,three,four
 
   one:
     - name: per_video
@@ -46,6 +47,13 @@ def test_formbuilder(qtbot):
     - name: node
       label: Node
       type: list
+
+  four:
+    - name: lossWeight
+      label: Loss Weight
+      type: double
+      default: 1.0
+
 """
 
     items_to_create = yaml.load(form_yaml, Loader=yaml.SafeLoader)
@@ -132,3 +140,65 @@ def test_string_list_widget(qtbot):
 
     widget.setValue(["zip", "cab"])
     assert widget.text() == "zip cab"
+
+
+def test_exponential_spin_box(qtbot):
+    """I am testing the exponential spin box class itself not with the gui"""
+    widget = formbuilder.ExponentialSpinBox()
+    qtbot.addWidget(widget)
+
+    widget.setValue(1.0)
+    print(widget.value())
+    assert math.isclose(widget.value(), 1.0, rel_tol=1e-3)
+
+    widget.stepBy(1)
+    print(widget.value())
+    assert math.isclose(widget.value(), 10.0, rel_tol=1e-3)
+
+    widget.stepBy(1)
+    print(widget.value())
+    assert math.isclose(widget.value(), 100.0, rel_tol=1e-3)
+
+    widget.stepBy(-1)
+    print(widget.value())
+    assert math.isclose(widget.value(), 10.0, rel_tol=1e-3)
+
+
+def test_formbuilder_lossweight(qtbot):
+    form_yaml = """
+- name: lossWeight
+  label: Loss Weight
+  type: double
+  default: 1.0
+"""
+
+    items_to_create = yaml.load(form_yaml, Loader=yaml.SafeLoader)
+    layout = formbuilder.FormBuilderLayout(items_to_create)
+
+    form_data = layout.get_form_data()
+    print(form_data)
+
+    # {lossWeight : 1}
+    assert "lossWeight" in form_data
+    assert form_data["lossWeight"] == 1.0
+
+    # Make sure the field
+    loss_weight_field = layout.fields["lossWeight"]
+    print(loss_weight_field)
+    assert isinstance(loss_weight_field, formbuilder.ExponentialSpinBox)
+
+    loss_weight_field.stepBy(1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 10.0
+
+    loss_weight_field.stepBy(1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 100.0
+
+    loss_weight_field.stepBy(1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 1000.0
+
+    loss_weight_field.stepBy(1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 1000.0
