@@ -202,3 +202,31 @@ def test_formbuilder_lossweight(qtbot):
     loss_weight_field.stepBy(1)
     print(loss_weight_field.value())
     assert loss_weight_field.value() == 1000.0
+
+    loss_weight_field.stepBy(-1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 100.0
+
+    loss_weight_field.stepBy(-1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 10.0
+
+    loss_weight_field.stepBy(-1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 1.0
+
+    loss_weight_field.stepBy(-1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 0.10
+
+    loss_weight_field.stepBy(-1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 0.01
+
+    loss_weight_field.stepBy(-1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 0.0
+
+    loss_weight_field.stepBy(1)
+    print(loss_weight_field.value())
+    assert loss_weight_field.value() == 0.01
