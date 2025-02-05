@@ -29,7 +29,6 @@ want to add a new type of supported form field.
 
 from typing import Any, Dict, List, Optional, Text
 
-
 import yaml
 from qtpy import QtCore, QtWidgets
 
@@ -244,7 +243,7 @@ class ExponentialSpinBox(QtWidgets.QDoubleSpinBox):
         elif currValue == 0.0 and steps > 0:
             newValue = 0.01 * (10 ** (steps - 1))
         else:
-            newValue = currValue * (10.0 ** steps)
+            newValue = currValue * (10.0**steps)
 
         # Ensures value is in the range (0 - 1000)
         newValue = min(self.maximum(), newValue)

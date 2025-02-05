@@ -184,7 +184,6 @@ def test_formbuilder_lossweight(qtbot):
     layout = formbuilder.FormBuilderLayout(items_to_create)
 
     form_data = layout.get_form_data()
-    print(form_data)
 
     # form_data = [{lossWeight : 1}]
     assert "lossWeight" in form_data
