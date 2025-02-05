@@ -166,8 +166,10 @@ def test_exponential_spin_box(qtbot):
 
     # Test numbers other than 1 and -1
     widget.stepBy(2)
-    print(widget.value())
     assert math.isclose(widget.value(), 100.0, rel_tol=1e-3)
+
+    widget.stepBy(-2)
+    assert math.isclose(widget.value(), 1.0, rel_tol=1e-3)
 
 
 def test_formbuilder_lossweight(qtbot):
@@ -184,11 +186,11 @@ def test_formbuilder_lossweight(qtbot):
     form_data = layout.get_form_data()
     print(form_data)
 
-    # {lossWeight : 1}
+    # form_data = [{lossWeight : 1}]
     assert "lossWeight" in form_data
     assert form_data["lossWeight"] == 1.0
 
-    # Make sure the field
+    # Make sure the field is exponentialSpinbox
     loss_weight_field = layout.fields["lossWeight"]
     assert isinstance(loss_weight_field, formbuilder.ExponentialSpinBox)
 
